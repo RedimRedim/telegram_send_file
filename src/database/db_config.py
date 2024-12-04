@@ -14,6 +14,8 @@ class DatabaseConnection:
         self.connection = None
         self.cursor = None
         self.data_path = os.path.join(os.path.dirname(__file__), "../data")
+        # Initialize connection
+        self.initialize()
 
     def initialize(self):
         if self.connection is None:
@@ -39,7 +41,7 @@ class DatabaseConnection:
 
             return result_df
         except (Exception, psycopg2.DatabaseError) as error:
-            print(f"Error executing query: {error}")
+            print(f"Error executing query: {error}, Connection error")
             return None
 
     async def close(self):

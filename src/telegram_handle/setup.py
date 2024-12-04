@@ -1,4 +1,4 @@
-from telegram_handle.config import TelegramBot
+from src.telegram_handle.config import TelegramBot
 from dotenv import load_dotenv
 import os
 

@@ -19,9 +19,3 @@ def get_file():
     file = os.path.join(os.path.dirname(__file__), "../data/shinkansen.csv")
 
     return FileResponse(file, media_type="text/csv", filename="shinkansen.csv")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,13 +1,15 @@
+from src.database.setup import db
+
 from telegram import Bot
 from telegram import InputFile, Update
 from telegram.ext import Application, CommandHandler, CallbackContext
-import time
 from collections import defaultdict
+import time
 import os
 import logging
 import asyncio
-from database.setup import db
 import requests
+import httpx
 
 # Set up logging configuration
 logging.basicConfig(
@@ -69,9 +71,11 @@ class TelegramBot:
         # if request file is shinkansen
         # run query then save csv and push to telegram
         if request_filename in "shinkansen":
-            response = requests.request("GET", "http://localhost:8000/shinkansen")
+            # make a request to FastAPI server to get data and save as csv
+            async with httpx.AsyncClient() as client:
+                response = await client.get("http://localhost:8000/shinkansen")
 
-            if response:
+            if response.status_code == 200:
                 with open(os.path.join(FILE_DIR, "shinkansen.csv"), "rb") as file:
                     await update.message.reply_document(
                         document=InputFile(file),

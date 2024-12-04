@@ -11,11 +11,16 @@ class ApiLogic:
     def get_shinkansen_data(self) -> None:
         try:
             result_df = db.execute_query(
-                query="""SELECT * FROM "test"."shinkansen" """, filename="shinkansen"
+                query="""SELECT * FROM "test"."shinkansen_station" """,
+                filename="shinkansen",
             )
 
+            print(result_df.head(2))
+
             # save dataframe result to csv
-            DataFrameUtils.save_to_csv(result_df, self.data_path, filename="shinkansen")
+            DataFrameUtils.save_to_csv(
+                result_df, self.data_path, filename="shinkansen.csv"
+            )
         except Exception as e:
             print(f"Error fetching & saving shinkansen data: {e}")
 
