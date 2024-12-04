@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 import os
 
@@ -12,10 +12,21 @@ def testing():
     return {"message": "Hello, World!"}
 
 
-@app.get("/shinkansen")
-def get_file():
-    ApiLogicInstance.get_shinkansen_data()
-    # run query + save the file + find the file
-    file = os.path.join(os.path.dirname(__file__), "../data/shinkansen.csv")
+@app.get("/data")
+async def get_file(filename: str):
+    filename = filename.lower()
 
-    return FileResponse(file, media_type="text/csv", filename="shinkansen.csv")
+    if not filename:
+        return {"error": "Filename is required."}
+
+    if filename not in ["shinkansen", "tokyo"]:
+        raise HTTPException(status_code=400, detail="Invalid filename")
+
+    if filename == "shinkansen":
+        # run query + save the file + find the file
+        ApiLogicInstance.get_shinkansen_data()
+    elif filename == "tokyo":
+        ApiLogicInstance.get_tokyo_data()
+
+    file = os.path.join(os.path.dirname(__file__), f"../data/{filename}.csv")
+    return FileResponse(file, media_type="text/csv", filename=f"{filename}.csv")
